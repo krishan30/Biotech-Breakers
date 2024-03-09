@@ -10,7 +10,7 @@ from multiprocessing import cpu_count
 
 
 def calculate_sequence_identity(seq1, seq2):
-    alignments = pairwise2.align.globalds(seq1, seq2, substitution_matrix, -0.5, -0.3)
+    alignments = pairwise2.align.globalds(seq1, seq2, substitution_matrix, -0.5, -0.3,)
     best_alignment = alignments[0]  # Assuming you want the best alignment
     aligned_seq1, aligned_seq2, score, start, end = best_alignment
 
@@ -30,7 +30,7 @@ def load_sequences_from_csv(file_path):
 
 def check_duplicates(dataset1, dataset2):
     # Step 1: Merge the DataFrames based on the key column
-    merged_df = pd.merge(dataset1, dataset2, on='Sequence', how='inner')
+    merged_df = pd.concat([dataset1, dataset2],axis=0)
 
     # Step 2: Identify Duplicates
     duplicates = merged_df[merged_df.duplicated(subset=['Sequence'], keep=False)]
@@ -41,10 +41,9 @@ def check_duplicates(dataset1, dataset2):
     else:
         return False
 
-
 def remove_duplicates(dataset1, dataset2):
     # Step 1: Merge the DataFrames based on the key column
-    merged_df = pd.merge(dataset1, dataset2, on='Sequence', how='inner')
+    merged_df = pd.concat([dataset1, dataset2],axis=0)
 
     # Step 2: Identify Duplicates
     duplicates = merged_df[merged_df.duplicated(subset=['Sequence'], keep=False)]
@@ -110,8 +109,8 @@ def main():
             print("Entry", seq1_index, "is unique")
             new_sequences = pd.concat([new_sequences, pd.DataFrame([filtered_dataset1.iloc[seq1_index]])],
                                       ignore_index=True)
-            new_sequences.to_csv("Dataset/new_entries_subpart_1.csv", index=False)
-    new_sequences.to_csv("Dataset/new_entries_subpart_1.csv", index=False)
+            new_sequences.to_csv("Dataset/new_entries.csv", index=False)
+    new_sequences.to_csv("Dataset/new_entries.csv", index=False)
 
 
 if __name__ == "__main__":
